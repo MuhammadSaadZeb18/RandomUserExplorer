@@ -1,0 +1,180 @@
+/* Import Tailwind v4 */
+@import "tailwindcss";
+
+/* =============================
+   🌈 THEME CUSTOMIZATION
+   ============================= */
+@theme {
+  /* 🎨 Colors */
+  --color-primary: #247934;
+  --color-secondary: #7ac237;
+  --color-heading: #253d4e;
+  --color-paragraph: #7e7e7e;
+  --color-bgCard: #f7f9fa;
+
+  /* 🧩 Fonts */
+  --font-quicksand: "Quicksand", sans-serif;
+  --font-lato: "Lato", sans-serif;
+
+  /* 🔲 Radius */
+  --radius-Sm: 4px;
+  --radius-2Sm: 8px;
+  --radius-Md: 15px;
+  --radius-2Md: 20px;
+  --radius-Lg: 30px;
+  --radius-2Lg: 50px;
+
+  /* 🖥️ Custom breakpoints */
+  --breakpoint-xs: 400px;
+  --breakpoint-xs1: 500px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-md1: 800px;
+  --breakpoint-md2: 950px;
+  --breakpoint-lg: 1100px;
+  --breakpoint-lg2: 1200px;
+
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* ✨ Example keyframes (allowed in @theme) */
+/* @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+} */
+
+/* =============================
+   🧠 BASE STYLES
+   ============================= */
+html {
+  font-size: 62.5%;
+  @media (max-width: 100px) {
+    font-size: 55.2%;
+  }
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-heading font-quicksand font-bold;
+  }
+  h1 {
+    /* @apply text-[clamp(4.6rem,5vw+2rem,7.2rem)]; */
+    @apply text-7xl md2:text-8xl;
+  }
+
+  h2 {
+    @apply text-[4rem] sm:text-[4.8rem];
+  }
+  h3 {
+    @apply text-[3rem] sm:text-[4rem] leading-tight;
+  }
+  h4 {
+    @apply text-[2.4rem] sm:text-[3.2rem];
+  }
+  h5 {
+    @apply sm:text-[2.4rem] text-[1.8rem];
+  }
+  h6 {
+    @apply sm:text-[1.4rem] text-[1.4rem];
+  }
+  p {
+    @apply text-paragraph font-lato font-normal text-[14px] sm:text-[16px];
+  }
+
+  /* .margins {
+    @apply px-[2rem]  md2:px-[6rem];
+  } */
+}
+
+/* =============================
+   🧱 COMPONENT STYLES
+   ============================= */
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white font-semibold text-[14px] px-8 py-4 cursor-pointer hover:bg-secondary transition;
+  }
+
+  .special-p {
+    @apply text-paragraph font-lato text-[16px] sm:text-[30px];
+  }
+
+  .blogPad {
+    @apply px-[1rem] sm:px-[4rem];
+  }
+  .border {
+    @apply border-[1px] border-[#ECECEC];
+  }
+}
+
+/* =============================
+   📦 UTILITIES / EXTRAS
+   ============================= */
+
+.container {
+  max-width: 150rem;
+  margin: 0 auto;
+  padding: 0 6rem;
+  @media (max-width: 1550px) {
+    max-width: 140rem;
+  }
+  @media (max-width: 1000px) {
+    padding: 0 3rem;
+  }
+  @media (max-width: 600px) {
+    padding: 0 2rem;
+  }
+}
+
+.SecondaryContainer {
+  max-width: 140rem;
+  margin: 0 auto;
+  padding: 0 10rem;
+  @media (max-width: 1450px) {
+    max-width: 130rem;
+  }
+  @media (max-width: 1000px) {
+    padding: 0 4rem;
+  }
+  @media (max-width: 600px) {
+    padding: 0 2rem;
+  }
+}
+.banner {
+  background-image: url("../src/assets//bnrBg.png");
+  background-size: cover;
+  background-position: right;
+  border-radius: 20px;
+}
+/* Hide scrollbar but keep scrolling */
+::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
