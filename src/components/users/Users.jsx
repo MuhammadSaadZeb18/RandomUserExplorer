@@ -6,17 +6,40 @@ import Loader from "../loader/Loader";
 import { UserContext } from "../../store/FetchUser-Context";
 
 const Users = () => {
-  const { displayUsers, fetchOneUser, fetchMultiUsers, loading } =
+  const { displayUsers, fetchOneUser, fetchMultiUsers, loading, error } =
     useContext(UserContext);
-
+  const [errorMsg, setErrorMsg] = useState("");
   const [sortType, setSortType] = useState("name");
 
   // Load 1 user on first render
   useEffect(() => {
-    fetchOneUser();
+    const fetchData = async () => {
+      try {
+        await fetchOneUser();
+      } catch (err) {
+        setErrorMsg("Failed to fetch user. Please try again.");
+      }
+    };
+    fetchData();
   }, []);
-
   if (loading) return <Loader />;
+  if (error || errorMsg)
+    return (
+      <div className="container mt-20 text-center">
+        <p className="text-red-500 dark:text-red-400 text-[1.8rem] font-semibold">
+          {errorMsg || "Something went wrong while fetching users."}
+        </p>
+        <button
+          onClick={() => {
+            setErrorMsg("");
+            fetchOneUser();
+          }}
+          className="mt-4 px-6 py-3 bg-primary dark:bg-yellow-500 text-white rounded-md hover:bg-secondary dark:hover:bg-yellow-400 transition-colors duration-300"
+        >
+          Retry
+        </button>
+      </div>
+    );
 
   // Sorting
   const sortedUsers = [...displayUsers].sort((a, b) => {
@@ -35,7 +58,6 @@ const Users = () => {
 
   return (
     <div className="container">
-    
       <div className="flex items-center justify-between mt-[3rem]!">
         <h4 className="flex items-center gap-3">
           <HiMiniUserGroup size={40} className="text-primary!" />
@@ -52,7 +74,6 @@ const Users = () => {
         </select>
       </div>
 
-  
       <div className="flex gap-6 my-[2rem] flex-wrap">
         <button onClick={fetchOneUser} className="btn-primary rounded-Sm">
           Fetch One User

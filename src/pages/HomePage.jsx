@@ -8,8 +8,10 @@ const HomePage = () => {
   return (
     <>
       <Header />
-      <Hero />
-      <Users />
+      <main>
+        <Hero />
+        <Users />
+      </main>
       <Footer />
     </>
   );
