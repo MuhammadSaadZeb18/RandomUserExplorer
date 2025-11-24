@@ -13,7 +13,7 @@ const Pagination = () => {
         return (
           <button
             key={page}
-            className="btn-primary rounded-Sm"
+            className="btn-primary rounded-Sm w-5 h-10 flex items-center justify-center"
             onClick={() => fetchByPagination(page)}
           >
             {page}

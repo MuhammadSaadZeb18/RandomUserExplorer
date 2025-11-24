@@ -13,14 +13,14 @@ const Filters = ({
   allCountries,
 }) => {
   return (
-    <div className="flex items-center justify-between mt-[3rem]! flex-wrap">
+    <div className="flex flex-col items-start justify-between xs1:items-center xs1:flex-row mt-12! flex-wrap">
       <h4 className="flex items-center gap-3">
         <HiMiniUserGroup size={40} className="text-primary!" />
         Users
       </h4>
 
       {/* TWO FILTERS */}
-      <div className="flex gap-5 flex-wrap">
+      <div className="flex gap-5 ">
         {/* GENDER FILTER */}
         <div className="relative">
           <button

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import UserCard from "./UserCard";
 import { Link } from "react-router-dom";
-import Loader from "../loader/Loader";
 import { UserContext } from "../../store/FetchUser-Context";
 import Filters from "../filters/Filters";
 import Pagination from "../pagination/Pagination";
+import ShimmerUserCard from "../loader/ShimerUserCard"; // <-- NEW
 
 const Users = () => {
   const { displayUsers, fetchOneUser, fetchMultiUsers, loading, error } =
@@ -12,7 +12,6 @@ const Users = () => {
 
   const [errorMsg, setErrorMsg] = useState("");
 
-  // NEW STATES FOR FILTERS
   const [openGenderDropdown, setOpenGenderDropdown] = useState(false);
   const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
 
@@ -62,7 +61,6 @@ const Users = () => {
     return genderMatch && countryMatch;
   });
 
-  // if (filteredUsers.length > 1) return <Pagination />;
   return (
     <div className="container">
       {/* FILTERS */}
@@ -79,7 +77,7 @@ const Users = () => {
       />
 
       {/* BUTTONS */}
-      <div className="flex gap-6 my-[2rem] flex-wrap">
+      <div className="flex gap-6 my-8 flex-wrap">
         <button onClick={fetchOneUser} className="btn-primary rounded-Sm">
           Fetch One User
         </button>
@@ -94,9 +92,13 @@ const Users = () => {
 
       {/* USERS GRID */}
       {loading ? (
-        <Loader />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md2:grid-cols-3 gap-6 mb-40! mt-20!">
+          {[...Array(3)].map((_, i) => (
+            <ShimmerUserCard key={i} />
+          ))}
+        </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md2:grid-cols-3 gap-6 mb-[10rem]! mt-[5rem]!">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md2:grid-cols-3 gap-6 mb-40! mt-20!">
           {filteredUsers.map((user) => (
             <Link
               key={user.login.uuid}
@@ -119,6 +121,7 @@ const Users = () => {
           ))}
         </div>
       )}
+
       {filteredUsers.length > 1 && <Pagination />}
     </div>
   );
