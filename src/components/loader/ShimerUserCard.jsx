@@ -1,5 +1,15 @@
 import React from "react";
 
+const fields = [
+  { label: "Name" },
+  { label: "Email" },
+  { label: "Phone" },
+  { label: "Address" },
+  { label: "Gender" },
+  { label: "Date of birth" },
+  { label: "Country" },
+];
+
 const ShimmerUserCard = () => {
   return (
     <div
@@ -12,9 +22,9 @@ const ShimmerUserCard = () => {
       </div>
 
       {/* TEXT FIELDS SHIMMER */}
-      {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-        <div key={i} className="flex items-center justify-between">
-          <div className="h-4 w-24 bg-gray-300 rounded"></div>
+      {fields.map((i, index) => (
+        <div key={index} className="flex items-center justify-between">
+          <h6>{i.label}</h6>
           <div className="h-4 w-32 bg-gray-300 rounded"></div>
         </div>
       ))}
