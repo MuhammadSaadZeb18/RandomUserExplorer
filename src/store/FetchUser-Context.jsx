@@ -12,10 +12,11 @@ export const UserProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await fetch("https://randomuser.me/api/");
+      // const res = await fetch("https://randomuser.me/api/");
       if (!res.ok) throw new Error("Something went wrong");
       const data = await res.json();
-
       setDisplayUsers(data.results); // always array
+      console.log(data.results);
     } catch (error) {
       console.log(error);
       setError(error);
@@ -28,10 +29,33 @@ export const UserProvider = ({ children }) => {
   const fetchMultiUsers = async (count = 10) => {
     try {
       setLoading(true);
+      // const res = await fetch(
+      //   "https://randomuser.me/api/?page=1&results=9&seed=abc"
+      // );
       const res = await fetch(`https://randomuser.me/api/?results=${count}`);
       const data = await res.json();
 
       setDisplayUsers(data.results);
+      console.log(data.results);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pagiantion
+  const fetchByPagination = async (page = 1) => {
+    try {
+      setLoading(true);
+      const res = await fetch(
+        `https://randomuser.me/api/?page=${page}&results=9&seed=abc`
+      );
+
+      const data = await res.json();
+
+      setDisplayUsers(data.results);
+      console.log(data.results);
     } catch (e) {
       console.log(e);
     } finally {
@@ -47,6 +71,7 @@ export const UserProvider = ({ children }) => {
         fetchOneUser,
         fetchMultiUsers,
         error,
+        fetchByPagination,
       }}
     >
       {children}

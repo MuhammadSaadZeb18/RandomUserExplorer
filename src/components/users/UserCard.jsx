@@ -3,7 +3,6 @@ import React from "react";
 const UserCard = ({ user }) => {
   const { name, email, phone, adress, gender, dob, country, img } = user;
 
-
   const fields = [
     { label: "Name", value: name },
     { label: "Email", value: email },
@@ -20,7 +19,7 @@ const UserCard = ({ user }) => {
                     bg-white hover:bg-gray-50 transform hover:-translate-y-1 hover:scale-105 
                     shadow-md hover:shadow-xl transition-all duration-300 ease-in-out"
     >
-      <div className="overflow-hidden rounded-full w-[20rem] h-[20rem] mx-auto mb-5">
+      <div className="overflow-hidden border  rounded-full w-[20rem] h-[20rem] mx-auto mb-5">
         <img
           src={img}
           alt={name}

@@ -1,17 +1,25 @@
 import React, { useEffect, useState, useContext } from "react";
 import UserCard from "./UserCard";
-import { HiMiniUserGroup } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import Loader from "../loader/Loader";
 import { UserContext } from "../../store/FetchUser-Context";
+import Filters from "../filters/Filters";
+import Pagination from "../pagination/Pagination";
 
 const Users = () => {
   const { displayUsers, fetchOneUser, fetchMultiUsers, loading, error } =
     useContext(UserContext);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [sortType, setSortType] = useState("name");
 
-  // Load 1 user on first render
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // NEW STATES FOR FILTERS
+  const [openGenderDropdown, setOpenGenderDropdown] = useState(false);
+  const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
+
+  const [genderType, setGenderType] = useState("");
+  const [countryType, setCountryType] = useState("");
+
+  // Load 1 user initially
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,7 +30,7 @@ const Users = () => {
     };
     fetchData();
   }, []);
-  if (loading) return <Loader />;
+
   if (error || errorMsg)
     return (
       <div className="container mt-20 text-center">
@@ -41,75 +49,77 @@ const Users = () => {
       </div>
     );
 
-  // Sorting
-  const sortedUsers = [...displayUsers].sort((a, b) => {
-    if (sortType === "name")
-      return `${a.name.first} ${a.name.last}`
-        .toLowerCase()
-        .localeCompare(`${b.name.first} ${b.name.last}`.toLowerCase());
+  // FILTER USERS
+  const filteredUsers = displayUsers.filter((user) => {
+    const genderMatch =
+      genderType === "" ||
+      user.gender.toLowerCase() === genderType.toLowerCase();
 
-    if (sortType === "gender") return a.gender.localeCompare(b.gender);
+    const countryMatch =
+      countryType === "" ||
+      user.nat.toLowerCase() === countryType.toLowerCase();
 
-    if (sortType === "country")
-      return a.location.country.localeCompare(b.location.country);
-
-    return 0;
+    return genderMatch && countryMatch;
   });
 
+  // if (filteredUsers.length > 1) return <Pagination />;
   return (
     <div className="container">
-      <div className="flex items-center justify-between mt-[3rem]!">
-        <h4 className="flex items-center gap-3">
-          <HiMiniUserGroup size={40} className="text-primary!" />
-          Users
-        </h4>
+      {/* FILTERS */}
+      <Filters
+        openGenderDropdown={openGenderDropdown}
+        openCountryDropdown={openCountryDropdown}
+        setOpenGenderDropdown={setOpenGenderDropdown}
+        setOpenCountryDropdown={setOpenCountryDropdown}
+        genderType={genderType}
+        countryType={countryType}
+        setGenderType={setGenderType}
+        setCountryType={setCountryType}
+        allCountries={[...new Set(displayUsers.map((u) => u.nat))]}
+      />
 
-        <select
-          className="border rounded-Md px-6 py-3 text-[1.6rem] bg-white"
-          onChange={(e) => setSortType(e.target.value)}
-        >
-          <option value="name">by name</option>
-          <option value="gender">by gender</option>
-          <option value="country">by country</option>
-        </select>
-      </div>
-
+      {/* BUTTONS */}
       <div className="flex gap-6 my-[2rem] flex-wrap">
         <button onClick={fetchOneUser} className="btn-primary rounded-Sm">
           Fetch One User
         </button>
 
         <button
-          onClick={() => fetchMultiUsers(6)}
+          onClick={() => fetchMultiUsers(9)}
           className="btn-primary rounded-Sm"
         >
           Fetch Many Users
         </button>
       </div>
 
-      {/* USER GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md2:grid-cols-3 gap-6 mb-[10rem]! mt-[5rem]!">
-        {sortedUsers.map((user) => (
-          <Link
-            key={user.login.uuid}
-            to={`/user/${user.login.uuid}`}
-            state={{ user }}
-          >
-            <UserCard
-              user={{
-                name: `${user.name.first} ${user.name.last}`,
-                email: user.email,
-                phone: user.phone,
-                adress: `${user.location.street.number} ${user.location.street.name}`,
-                gender: user.gender,
-                dob: user.dob.date.slice(0, 10),
-                country: user.location.country,
-                img: user.picture.large,
-              }}
-            />
-          </Link>
-        ))}
-      </div>
+      {/* USERS GRID */}
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md2:grid-cols-3 gap-6 mb-[10rem]! mt-[5rem]!">
+          {filteredUsers.map((user) => (
+            <Link
+              key={user.login.uuid}
+              to={`/user/${user.login.uuid}`}
+              state={{ user }}
+            >
+              <UserCard
+                user={{
+                  name: `${user.name.first} ${user.name.last}`,
+                  email: user.email,
+                  phone: user.phone,
+                  adress: `${user.location.street.number} ${user.location.street.name}`,
+                  gender: user.gender,
+                  dob: user.dob.date.slice(0, 10),
+                  country: user.location.country,
+                  img: user.picture.large,
+                }}
+              />
+            </Link>
+          ))}
+        </div>
+      )}
+      {filteredUsers.length > 1 && <Pagination />}
     </div>
   );
 };
