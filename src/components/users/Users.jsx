@@ -22,7 +22,7 @@ const Users = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await fetchOneUser();
+        await fetchMultiUsers(9);
       } catch (err) {
         setErrorMsg("Failed to fetch user. Please try again.");
       }
@@ -123,6 +123,20 @@ const Users = () => {
       )}
 
       {filteredUsers.length > 1 && <Pagination />}
+      {!loading && filteredUsers.length === 0 && (
+        <div className="text-center mt-10 text-lg text-gray-500">
+          <p>No user matches your current filters.</p>
+          <button
+            onClick={() => {
+              setGenderType("");
+              setCountryType("");
+            }}
+            className="btn-primary mt-4"
+          >
+            Clear Filters
+          </button>
+        </div>
+      )}
     </div>
   );
 };

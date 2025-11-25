@@ -2,9 +2,9 @@ import React, { useContext } from "react";
 import { UserContext } from "../../store/FetchUser-Context";
 
 const Pagination = () => {
-  const { fetchByPagination } = useContext(UserContext);
+  const { fetchByPagination, activePage } = useContext(UserContext);
 
-  const totalPages = 10; // since you said only 10 pages
+  const totalPages = 10;
 
   return (
     <div className="container flex gap-2 justify-center flex-wrap my-4">
@@ -13,7 +13,13 @@ const Pagination = () => {
         return (
           <button
             key={page}
-            className="btn-primary rounded-Sm w-5 h-[40px] flex items-center justify-center"
+            className={`
+             rounded-Sm w-5 h-[40px] btn-primary flex items-center justify-center  ${
+               activePage === page
+                 ? " bg-primary text-white "
+                 : "bg-gray-200 text-black"
+             }
+ `}
             onClick={() => fetchByPagination(page)}
           >
             {page}
