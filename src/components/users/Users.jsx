@@ -1,105 +1,84 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
+import { UserContext } from "../../store/fetchNew-context";
 import UserCard from "./UserCard";
-import { Link } from "react-router-dom";
-import { UserContext } from "../../store/FetchUser-Context";
 import Filters from "../filters/Filters";
 import Pagination from "../pagination/Pagination";
-import ShimmerUserCard from "../loader/ShimerUserCard"; // <-- NEW
+import ShimmerUserCard from "../loader/ShimerUserCard";
+import { Link } from "react-router-dom";
 
 const Users = () => {
-  const { displayUsers, fetchOneUser, fetchMultiUsers, loading, error } =
-    useContext(UserContext);
-
-  const [errorMsg, setErrorMsg] = useState("");
+  const {
+    users,
+    fetchUsers,
+    loading,
+    error,
+    hasFetched,
+    page,
+    gender,
+    nat,
+  } = useContext(UserContext);
 
   const [openGenderDropdown, setOpenGenderDropdown] = useState(false);
   const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const [genderType, setGenderType] = useState("");
-  const [countryType, setCountryType] = useState("");
-
-  // Load 1 user initially
+  // First load only
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await fetchMultiUsers(9);
-      } catch (err) {
-        setErrorMsg("Failed to fetch user. Please try again.");
-      }
-    };
-    fetchData();
-  }, []);
+    if (!hasFetched) {
+      fetchUsers(9, page, gender, nat);
+    }
+  }, [hasFetched, fetchUsers, page, gender, nat]);
+
+  // Buttons
+  const fetchOneUser = () => fetchUsers(1, 1, gender, nat); // always page 1
+  const fetchMultiUsers = () => fetchUsers(9, page, gender, nat);
 
   if (error || errorMsg)
     return (
       <div className="container mt-20 text-center">
-        <p className="text-red-500 dark:text-red-400 text-[1.8rem] font-semibold">
-          {errorMsg || "Something went wrong while fetching users."}
-        </p>
+        <p className="text-red-500 text-2xl">{errorMsg || error}</p>
         <button
           onClick={() => {
             setErrorMsg("");
-            fetchOneUser();
+            fetchUsers(10, page, gender, nat);
           }}
-          className="mt-4 px-6 py-3 bg-primary dark:bg-yellow-500 text-white rounded-md hover:bg-secondary dark:hover:bg-yellow-400 transition-colors duration-300"
+          className="mt-4 px-6 py-3 bg-primary text-white rounded-md"
         >
           Retry
         </button>
       </div>
     );
 
-  // FILTER USERS
-  const filteredUsers = displayUsers.filter((user) => {
-    const genderMatch =
-      genderType === "" ||
-      user.gender.toLowerCase() === genderType.toLowerCase();
-
-    const countryMatch =
-      countryType === "" ||
-      user.nat.toLowerCase() === countryType.toLowerCase();
-
-    return genderMatch && countryMatch;
-  });
-
   return (
     <div className="container">
       {/* FILTERS */}
       <Filters
         openGenderDropdown={openGenderDropdown}
-        openCountryDropdown={openCountryDropdown}
         setOpenGenderDropdown={setOpenGenderDropdown}
+        openCountryDropdown={openCountryDropdown}
         setOpenCountryDropdown={setOpenCountryDropdown}
-        genderType={genderType}
-        countryType={countryType}
-        setGenderType={setGenderType}
-        setCountryType={setCountryType}
-        allCountries={[...new Set(displayUsers.map((u) => u.nat))]}
       />
 
-      {/* BUTTONS */}
+      {/* ACTION BUTTONS */}
       <div className="flex gap-6 my-8 flex-wrap">
-        <button onClick={fetchOneUser} className="btn-primary rounded-Sm">
+        <button onClick={fetchOneUser} className="btn-primary">
           Fetch One User
         </button>
-
-        <button
-          onClick={() => fetchMultiUsers(9)}
-          className="btn-primary rounded-Sm"
-        >
+        <button onClick={fetchMultiUsers} className="btn-primary">
           Fetch Many Users
         </button>
       </div>
 
       {/* USERS GRID */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md2:grid-cols-3 gap-6 mb-40! mt-20!">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
             <ShimmerUserCard key={i} />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md2:grid-cols-3 gap-6 mb-40! mt-20!">
-          {filteredUsers.map((user) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {users.map((user) => (
             <Link
               key={user.login.uuid}
               to={`/user/${user.login.uuid}`}
@@ -122,21 +101,8 @@ const Users = () => {
         </div>
       )}
 
-      {filteredUsers.length > 1 && <Pagination />}
-      {!loading && filteredUsers.length === 0 && (
-        <div className="text-center mt-10 text-lg text-gray-500">
-          <p>No user matches your current filters.</p>
-          <button
-            onClick={() => {
-              setGenderType("");
-              setCountryType("");
-            }}
-            className="btn-primary mt-4"
-          >
-            Clear Filters
-          </button>
-        </div>
-      )}
+      {/* PAGINATION */}
+      {users.length > 1 && <Pagination />}
     </div>
   );
 };

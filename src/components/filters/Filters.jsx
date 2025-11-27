@@ -1,55 +1,53 @@
-import React from "react";
+import React, { useContext } from "react";
 import { HiMiniUserGroup } from "react-icons/hi2";
+import { UserContext } from "../../store/fetchNew-context";
+
+const nationalities = [
+  "AU","BR","CA","CH","DE","DK","ES","FI","FR","GB",
+  "IE","IN","IR","MX","NL","NO","NZ","RS","TR","UA","US"
+];
 
 const Filters = ({
   openGenderDropdown,
-  openCountryDropdown,
   setOpenGenderDropdown,
+  openCountryDropdown,
   setOpenCountryDropdown,
-  genderType,
-  countryType,
-  setGenderType,
-  setCountryType,
-  allCountries,
 }) => {
+  const { gender, nat, updateGender, updateNat } = useContext(UserContext);
+
   return (
     <div className="flex flex-col items-start justify-between xs1:items-center xs1:flex-row mt-12! flex-wrap">
       <h4 className="flex items-center gap-3">
-        <HiMiniUserGroup size={40} className="text-primary!" />
+        <HiMiniUserGroup size={40} />
         Users
       </h4>
 
-      {/* TWO FILTERS */}
-      <div className="flex gap-5 ">
-        {/* GENDER FILTER */}
+      <div className="flex gap-3">
+        
+        {/* GENDER */}
         <div className="relative">
           <button
-            onClick={() => {
-              setOpenGenderDropdown((prev) => !prev);
-              setOpenCountryDropdown(false);
-            }}
-            className="border cursor-pointer rounded-md px-6 py-3 text-[1.4rem] font-normal sm:text-[1.6rem] bg-white flex items-center justify-between "
+            onClick={() => setOpenGenderDropdown(prev => !prev)}
+            className="border rounded-md px-6 py-3"
           >
-            {genderType === "" ? "Gender" : genderType}
-            <span className="ml-3">▼</span>
+            <p>{gender || "Gender"} ▼</p>
           </button>
 
           {openGenderDropdown && (
             <div className="absolute left-0 mt-2 w-full bg-white shadow-lg border rounded-md z-20">
               <p
-                className="px-6 py-3 hover:bg-gray-100 cursor-pointer text-[1.6rem]"
+                className="px-6 py-3 hover:bg-gray-100 cursor-pointer"
                 onClick={() => {
-                  setGenderType("male");
+                  updateGender("male");
                   setOpenGenderDropdown(false);
                 }}
               >
                 Male
               </p>
-
               <p
-                className="px-6 py-3 hover:bg-gray-100 cursor-pointer text-[1.6rem]"
+                className="px-6 py-3 hover:bg-gray-100 cursor-pointer"
                 onClick={() => {
-                  setGenderType("female");
+                  updateGender("female");
                   setOpenGenderDropdown(false);
                 }}
               >
@@ -59,37 +57,33 @@ const Filters = ({
           )}
         </div>
 
-        {/* COUNTRY FILTER */}
+        {/* NATIONALITY */}
         <div className="relative">
           <button
-            onClick={() => {
-              setOpenCountryDropdown((prev) => !prev);
-              setOpenGenderDropdown(false);
-            }}
-            className="border cursor-pointer rounded-md px-6 py-3 text-[1.4rem] font-normal sm:text-[1.6rem] bg-white flex items-center justify-between"
+            onClick={() => setOpenCountryDropdown(prev => !prev)}
+            className="border rounded-md px-6 py-3"
           >
-            {countryType === "" ? "Nationility" : countryType}
-            <span className="ml-3">▼</span>
+            <p>{nat || "Nationality"} ▼</p>
           </button>
 
           {openCountryDropdown && (
-            <div className="absolute left-0 mt-2 w-full bg-white shadow-lg border rounded-md z-20 max-h-[260px] overflow-y-auto">
-              {/* Dynamic Countries from Users API */}
-              {allCountries.map((country, index) => (
+            <div className="absolute left-0 mt-2 w-full h-[200px] overflow-y-auto bg-white shadow-lg border rounded-md z-20">
+              {nationalities.map((code, index) => (
                 <p
                   key={index}
-                  className="px-6 py-3 hover:bg-gray-100 cursor-pointer text-[1.6rem]"
+                  className="px-6 py-3 hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
-                    setCountryType(country);
+                    updateNat(code);
                     setOpenCountryDropdown(false);
                   }}
                 >
-                  {country}
+                  {code}
                 </p>
               ))}
             </div>
           )}
         </div>
+
       </div>
     </div>
   );
