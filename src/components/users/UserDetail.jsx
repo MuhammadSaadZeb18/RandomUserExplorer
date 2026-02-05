@@ -1,6 +1,9 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 const UserDetail = ({ user }) => {
+  if (!user) return null;
+
   const {
     gender,
     name,
@@ -43,29 +46,61 @@ const UserDetail = ({ user }) => {
   ];
 
   return (
-    <div className=" rounded-Md container   mt-[10rem]!">
-      <div className="  border flex flex-col p-[2rem]! items-center  md:flex-row gap-6">
-        <div className="w-[100%] sm:w-[80%] md:w-[40%] flex items-center justify-center">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -30 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto mt-20 px-4 my-[5rem]!"
+    >
+      <motion.div
+        className="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col  gap-4 p-6"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* LEFT: Profile Image */}
+        <motion.div
+          className="w-full flex justify-center items-center"
+          whileHover={{ scale: 1.05 }}
+        >
           <img
             src={picture.large}
             alt={fullName}
-            className="rounded-md h-auto w-full  border bg-secondary"
+            className="rounded-full w-48 h-48 object-cover border-4 border-primary shadow-lg"
           />
-        </div>
+        </motion.div>
 
-        <div className="w-[100%] md:w-[60%] flex flex-col gap-3 ">
+        {/* RIGHT: Details */}
+        <motion.div
+          className="md:w-full flex flex-col"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.1 } },
+          }}
+        >
           {fields.map((field) => (
-            <div
+            <motion.div
               key={field.label}
-              className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0"
+              className="flex flex-row justify-between gap-1 sm:gap-0 p-2 rounded hover:bg-gray-50 transition-colors"
+              variants={{
+                hidden: { opacity: 0, x: -20 },
+                visible: { opacity: 1, x: 0 },
+              }}
             >
-              <h6 className="text-gray-700 font-semibold">{field.label}</h6>
-              <h6 className="text-paragraph font-normal">{field.value}</h6>
-            </div>
+              <h6 className="text-gray-700 font-semibold w-40">
+                {field.label}
+              </h6>
+              <h6 className="text-gray-600 font-normal truncate">
+                {field.value}
+              </h6>
+            </motion.div>
           ))}
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 

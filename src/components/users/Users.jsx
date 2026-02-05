@@ -1,5 +1,5 @@
-import React, { useEffect, useContext, useState } from "react";
-import { UserContext } from "../../store/fetchNew-context";
+import React, { useState } from "react";
+import { useUsers } from "../../hooks/useUsers";
 import UserCard from "./UserCard";
 import Filters from "../filters/Filters";
 import Pagination from "../pagination/Pagination";
@@ -7,41 +7,35 @@ import ShimmerUserCard from "../loader/ShimerUserCard";
 import { Link } from "react-router-dom";
 
 const Users = () => {
+  const [gender, setGender] = useState("");
+  const [nat, setNat] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(8);
+
   const {
-    users,
-    fetchUsers,
-    loading,
-    error,
-    hasFetched,
-    page,
-    gender,
-    nat,
-  } = useContext(UserContext);
+    data: users,
+    isFetching,
+    isError,
+    refetch,
+  } = useUsers(page, gender, nat, limit);
 
-  const [openGenderDropdown, setOpenGenderDropdown] = useState(false);
-  const [openCountryDropdown, setOpenCountryDropdown] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const fetchOneUser = () => {
+    setLimit(1);
+    setPage(1);
+    refetch();
+  };
 
-  // First load only
-  useEffect(() => {
-    if (!hasFetched) {
-      fetchUsers(9, page, gender, nat);
-    }
-  }, [hasFetched, fetchUsers, page, gender, nat]);
+  const fetchMultiUsers = () => {
+    setLimit(8);
+    refetch();
+  };
 
-  // Buttons
-  const fetchOneUser = () => fetchUsers(1, 1, gender, nat); // always page 1
-  const fetchMultiUsers = () => fetchUsers(9, page, gender, nat);
-
-  if (error || errorMsg)
+  if (isError)
     return (
       <div className="container mt-20 text-center">
-        <p className="text-red-500 text-2xl">{errorMsg || error}</p>
+        <p className="text-red-500 text-2xl">Failed to fetch users</p>
         <button
-          onClick={() => {
-            setErrorMsg("");
-            fetchUsers(10, page, gender, nat);
-          }}
+          onClick={refetch}
           className="mt-4 px-6 py-3 bg-primary text-white rounded-md"
         >
           Retry
@@ -51,15 +45,19 @@ const Users = () => {
 
   return (
     <div className="container">
-      {/* FILTERS */}
       <Filters
-        openGenderDropdown={openGenderDropdown}
-        setOpenGenderDropdown={setOpenGenderDropdown}
-        openCountryDropdown={openCountryDropdown}
-        setOpenCountryDropdown={setOpenCountryDropdown}
+        gender={gender}
+        setGender={(g) => {
+          setGender(g);
+          setPage(1);
+        }}
+        nat={nat}
+        setNat={(n) => {
+          setNat(n);
+          setPage(1);
+        }}
       />
 
-      {/* ACTION BUTTONS */}
       <div className="flex gap-6 my-8 flex-wrap">
         <button onClick={fetchOneUser} className="btn-primary">
           Fetch One User
@@ -69,16 +67,15 @@ const Users = () => {
         </button>
       </div>
 
-      {/* USERS GRID */}
-      {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {[...Array(3)].map((_, i) => (
+      {isFetching ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
             <ShimmerUserCard key={i} />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {users.map((user) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-[2rem]">
+          {users?.map((user) => (
             <Link
               key={user.login.uuid}
               to={`/user/${user.login.uuid}`}
@@ -101,8 +98,9 @@ const Users = () => {
         </div>
       )}
 
-      {/* PAGINATION */}
-      {users.length > 1 && <Pagination />}
+      {users?.length > 1 && (
+        <Pagination page={page} setPage={setPage} totalPages={10} />
+      )}
     </div>
   );
 };

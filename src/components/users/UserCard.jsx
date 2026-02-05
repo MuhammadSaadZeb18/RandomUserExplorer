@@ -1,42 +1,53 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 const UserCard = ({ user }) => {
   const { name, email, phone, adress, gender, dob, country, img } = user;
-
+  const truncateEmail = (email) => {
+    if (!email) return "";
+    const [userPart] = email.split("@");
+    return `${userPart}@g..`;
+  };
   const fields = [
     { label: "Name", value: name },
-    { label: "Email", value: email },
+    { label: "Email", value: truncateEmail(email) },
     { label: "Phone", value: phone },
-    { label: "Address", value: adress },
+    // { label: "Address", value: adress },
     { label: "Gender", value: gender },
     { label: "Date of birth", value: dob },
     { label: "Country", value: country },
   ];
 
   return (
-    <div
-      className="card border rounded-Md cursor-pointer p-6 flex flex-col gap-3 justify-center 
-                    bg-white hover:bg-gray-50 transform hover:-translate-y-1 hover:scale-105 
-                    shadow-md hover:shadow-xl transition-all duration-300 ease-in-out"
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      whileHover={{ scale: 1.05 }}
+      className="card border rounded-lg cursor-pointer p-4 flex flex-col gap-2 justify-center 
+                 bg-white shadow-md hover:shadow-xl transition-all duration-300 ease-in-out"
     >
-      <div className="overflow-hidden border  rounded-full w-[20rem] h-80 mx-auto mb-5">
-        <img
+      <div className="overflow-hidden border rounded-full w-32 h-32 mx-auto mb-4">
+        <motion.img
           src={img}
           alt={name}
-          className="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110"
+          className="w-full h-full object-cover"
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.5 }}
         />
       </div>
 
       {fields.map((field) => (
         <div
           key={field.label}
-          className="flex items-center justify-between transition-colors duration-300 hover:text-primary"
+          className="flex items-center justify-between transition-colors duration-300 hover:text-primary text-sm"
         >
-          <h6>{field.label}</h6>
-          <h6 className="text-paragraph font-normal">{field.value}</h6>
+          <h6 className="font-semibold">{field.label}</h6>
+          <h6 className="text-gray-600 font-normal truncate">{field.value}</h6>
         </div>
       ))}
-    </div>
+    </motion.div>
   );
 };
 

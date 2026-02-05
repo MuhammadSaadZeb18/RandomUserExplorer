@@ -1,9 +1,6 @@
-import React, { useContext } from "react";
-import { UserContext } from "../../store/fetchNew-context";
+import React from "react";
 
-const Pagination = () => {
-  const { page, updatePage, totalPages } = useContext(UserContext);
-
+const Pagination = ({ page, setPage, totalPages = 10 }) => {
   return (
     <div className="container flex gap-2 justify-center flex-wrap my-4">
       {Array.from({ length: totalPages }, (_, index) => {
@@ -12,14 +9,14 @@ const Pagination = () => {
           <button
             key={pageNumber}
             className={`
-              rounded-sm w-[40px] h-[40px] flex items-center justify-center my-[2rem]
+              rounded-sm w-[40px] h-[40px] font-bold cursor-pointer hover:bg-primary hover:text-white flex items-center justify-center 
               ${
                 page === pageNumber
                   ? "bg-primary text-white"
                   : "bg-gray-200 text-black"
               }
             `}
-            onClick={() => updatePage(pageNumber)}
+            onClick={() => setPage(pageNumber)}
           >
             {pageNumber}
           </button>

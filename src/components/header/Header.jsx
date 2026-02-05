@@ -17,16 +17,16 @@ const Header = () => {
         <Link to={"/"}>
           <img
             src={logo}
-            className="h-[6rem] w-[6rem] md:h-[9rem] md:w-[9rem] mix-blend-multiply"
+            className="h-[6rem] w-[6rem] md:h-[5rem] md:w-[5rem] mix-blend-multiply"
           />
         </Link>
 
         <ul className="flex items-center gap-2 sm:gap-6">
           <li className="p-2 border-secondary cursor-pointer border rounded-full">
-            <HiMiniSun className="text-primary h-[2rem] w-[2rem]  sm:h-[3rem] sm:w-[3rem]" />
+            <HiMiniSun className="text-primary h-[2rem] w-[2rem]  sm:h-[2rem] sm:w-[2rem]" />
           </li>
           <li className="p-2 border-secondary cursor-pointer border rounded-full">
-            <HiMiniUser className="text-primary h-[2rem] w-[2rem]  sm:h-[3rem] sm:w-[3rem]" />
+            <HiMiniUser className="text-primary h-[2rem] w-[2rem]  sm:h-[2rem] sm:w-[2rem]" />
           </li>
         </ul>
 
